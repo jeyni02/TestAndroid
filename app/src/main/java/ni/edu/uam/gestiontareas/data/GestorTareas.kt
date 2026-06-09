@@ -15,7 +15,19 @@ class GestorTareas {
     }
 
     fun completarTarea(id: Int) {
-        tareas.find { it.id == id }?.completada = true
+
+        val indice = tareas.indexOfFirst {
+            it.id == id
+        }
+
+        if (indice != -1) {
+
+            val tareaActual = tareas[indice]
+
+            tareas[indice] = tareaActual.copy(
+                completada = true
+            )
+        }
     }
 
     fun obtenerPendientes(): List<Tarea> {
@@ -28,5 +40,22 @@ class GestorTareas {
 
     fun obtenerTodas(): List<Tarea> {
         return tareas
+    }
+
+    fun obtenerCompletadas(): List<Tarea> {
+        return tareas.filter { it.completada }
+    }
+
+    fun ordenarAlfabeticamente(): List<Tarea> {
+        return tareas.sortedBy { it.titulo }
+    }
+
+    fun porcentajeCompletadas(): Double {
+
+        if (tareas.isEmpty()) {
+            return 0.0
+        }
+
+        return tareas.count { it.completada } * 100.0 / tareas.size
     }
 }
