@@ -213,7 +213,8 @@ fun PantallaTareas() {
 
                                         lista = gestor.obtenerTodas().map { it.copy() }
 
-                                    }
+                                    },
+                                    modifier = Modifier.testTag("eliminar_${tarea.id}")
                                 ) {
                                     Text("Eliminar")
                                 }
