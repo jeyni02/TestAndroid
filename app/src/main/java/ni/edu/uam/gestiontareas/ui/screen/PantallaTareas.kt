@@ -4,14 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +30,25 @@ fun PantallaTareas() {
         mutableStateOf<List<Tarea>>(emptyList())
     }
 
+    var filtro by remember {
+        mutableStateOf("TODAS")
+    }
+
+    val pendientes = lista.count { !it.completada }
+
+    val porcentaje =
+        if (lista.isEmpty()) {
+            0
+        } else {
+            (lista.count { it.completada } * 100) / lista.size
+        }
+
+    val tareasMostrar = when (filtro) {
+        "PENDIENTES" -> lista.filter { !it.completada }
+        "COMPLETADAS" -> lista.filter { it.completada }
+        else -> lista
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFEAF4FF)
@@ -49,52 +61,73 @@ fun PantallaTareas() {
         ) {
 
             Text(
-                text = "Gestión de Tareas",
-                fontSize = 28.sp,
+                text = "📋 Gestión de Tareas",
+                fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1565C0)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
             Text(
-                text = "Organiza tus actividades",
-                color = Color.Gray
+                text = "Organiza tus actividades diarias",
+                color = Color(0xFF607D8B)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color(0xFFB3D9FF)
-                ),
-                shape = RoundedCornerShape(24.dp)
+                    containerColor = Color(0xFFD9ECFF)
+                )
             ) {
 
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier.padding(18.dp)
                 ) {
+
+                    Text(
+                        text = "Título de la tarea",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1565C0)
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(8.dp)
+                    )
 
                     OutlinedTextField(
                         value = titulo,
                         onValueChange = {
                             titulo = it
                         },
-                        label = {
-                            Text("Título")
+                        placeholder = {
+                            Text(
+                                "Escribe una tarea..."
+                            )
                         },
+                        shape = RoundedCornerShape(18.dp),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .testTag("campoTitulo")
+                            .height(90.dp)
+                            .testTag("campoTitulo"),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF1E88E5),
+                            unfocusedBorderColor = Color(0xFF90CAF9),
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        )
                     )
 
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(
+                        modifier = Modifier.height(16.dp)
+                    )
 
                     Button(
                         onClick = {
 
-                            if (titulo.isNotBlank()) {
+                            if (titulo.trim().isNotEmpty()) {
 
                                 gestor.agregarTarea(
                                     Tarea(
@@ -104,88 +137,167 @@ fun PantallaTareas() {
                                     )
                                 )
 
-                                lista =
-                                    gestor.obtenerTodas().toList()
+                                lista = gestor.obtenerTodas().toList()
 
                                 titulo = ""
                             }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
+                            .height(60.dp)
                             .testTag("btnAgregar"),
+                        shape = RoundedCornerShape(30.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF64B5F6)
+                            containerColor = Color(0xFF42A5F5)
                         )
                     ) {
 
-                        Text("Agregar Tarea")
+                        Text(
+                            text = "➕ Agregar Tarea",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Text(
-                text = "Pendientes: ${
-                    lista.count { !it.completada }
-                }",
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1976D2),
-                modifier = Modifier.testTag("txtPendientes")
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Pendientes: $pendientes",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1565C0),
+                    modifier = Modifier.testTag("txtPendientes")
+                )
 
-            val porcentaje =
-                if (lista.isEmpty()) 0
-                else (lista.count { it.completada } * 100 / lista.size)
-
-            Text(
-                text = "Completado: $porcentaje%"
-            )
+                Text(
+                    text = "Completado: $porcentaje%",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF1565C0)
+                )
+            }
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+                Button(
+                    onClick = {
+                        filtro = "TODAS"
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD6ECFF),
+                        contentColor = Color(0xFF1565C0)
+                    )
+                ) {
+                    Text("Todas")
+                }
+
+                Button(
+                    onClick = {
+                        filtro = "PENDIENTES"
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD6ECFF),
+                        contentColor = Color(0xFF1565C0)
+                    )
+                ) {
+                    Text("Pendientes")
+                }
+
+                Button(
+                    onClick = {
+                        filtro = "COMPLETADAS"
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color(0xFFD6ECFF),
+                        contentColor = Color(0xFF1565C0)
+                    )
+                ) {
+                    Text("Completadas")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(
+                onClick = {
+
+                    lista = lista.sortedBy {
+                        it.titulo.lowercase()
+                    }
+
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFFD6ECFF),
+                    contentColor = Color(0xFF1565C0)
+                )
+            ) {
+
+                Text(
+                    "Ordenar A-Z",
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
             LazyColumn {
 
-                items(lista) { tarea ->
+                items(tareasMostrar) { tarea ->
 
                     Card(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(24.dp),
                         elevation = CardDefaults.cardElevation(
                             defaultElevation = 6.dp
                         ),
                         colors = CardDefaults.cardColors(
                             containerColor =
                                 if (tarea.completada)
-                                    Color(0xFFDFF5E1)
+                                    Color(0xFFE5F7EA)
                                 else
                                     Color.White
                         )
                     ) {
 
                         Column(
-                            modifier = Modifier.padding(16.dp)
+                            modifier = Modifier.padding(18.dp)
                         ) {
 
                             Text(
                                 text = tarea.titulo,
-                                fontWeight = FontWeight.Bold
+                                fontSize = 24.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF263238)
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(4.dp)
                             )
 
                             Text(
                                 text =
                                     if (tarea.completada)
-                                        "Completada"
+                                        "✅ Completada"
                                     else
-                                        "Pendiente"
+                                        "⏳ Pendiente",
+                                color = Color.DarkGray
                             )
 
                             Spacer(
-                                modifier = Modifier.height(8.dp)
+                                modifier = Modifier.height(12.dp)
                             )
 
                             Row {
@@ -195,10 +307,17 @@ fun PantallaTareas() {
 
                                         gestor.completarTarea(tarea.id)
 
-                                        lista = gestor.obtenerTodas().map { it.copy() }
+                                        lista = gestor
+                                            .obtenerTodas()
+                                            .map { it.copy() }
 
-                                    }
+                                    },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFD6ECFF),
+                                        contentColor = Color(0xFF1565C0)
+                                    )
                                 ) {
+
                                     Text("Completar")
                                 }
 
@@ -211,11 +330,20 @@ fun PantallaTareas() {
 
                                         gestor.eliminarTarea(tarea.id)
 
-                                        lista = gestor.obtenerTodas().map { it.copy() }
+                                        lista = gestor
+                                            .obtenerTodas()
+                                            .map { it.copy() }
 
                                     },
-                                    modifier = Modifier.testTag("eliminar_${tarea.id}")
+                                    modifier = Modifier.testTag(
+                                        "eliminar_${tarea.id}"
+                                    ),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(0xFFD6ECFF),
+                                        contentColor = Color(0xFF1565C0)
+                                    )
                                 ) {
+
                                     Text("Eliminar")
                                 }
                             }

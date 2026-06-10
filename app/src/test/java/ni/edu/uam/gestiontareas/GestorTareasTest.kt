@@ -104,4 +104,21 @@ class GestorTareasTest {
             gestor.contarPendientes()
         )
     }
+
+    /*@Test
+    fun pruebaNegativa_contarPendientes_fallaIntencionalmente() {
+
+        gestor.agregarTarea(
+            Tarea(
+                id = 1,
+                titulo = "Tarea de prueba",
+                descripcion = ""
+            )
+        )
+
+        assertEquals(
+            5,
+            gestor.contarPendientes()
+        )
+    }*/
 }
