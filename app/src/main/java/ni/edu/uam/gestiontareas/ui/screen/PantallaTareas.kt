@@ -187,6 +187,7 @@ fun PantallaTareas() {
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
@@ -195,8 +196,17 @@ fun PantallaTareas() {
                         filtro = "TODAS"
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD6ECFF),
-                        contentColor = Color(0xFF1565C0)
+                        containerColor =
+                            if (filtro == "TODAS")
+                                Color(0xFF42A5F5)
+                            else
+                                Color(0xFFD6ECFF),
+
+                        contentColor =
+                            if (filtro == "TODAS")
+                                Color.White
+                            else
+                                Color(0xFF1565C0)
                     )
                 ) {
                     Text("Todas")
@@ -207,8 +217,17 @@ fun PantallaTareas() {
                         filtro = "PENDIENTES"
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD6ECFF),
-                        contentColor = Color(0xFF1565C0)
+                        containerColor =
+                            if (filtro == "PENDIENTES")
+                                Color(0xFF42A5F5)
+                            else
+                                Color(0xFFD6ECFF),
+
+                        contentColor =
+                            if (filtro == "PENDIENTES")
+                                Color.White
+                            else
+                                Color(0xFF1565C0)
                     )
                 ) {
                     Text("Pendientes")
@@ -219,8 +238,17 @@ fun PantallaTareas() {
                         filtro = "COMPLETADAS"
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFFD6ECFF),
-                        contentColor = Color(0xFF1565C0)
+                        containerColor =
+                            if (filtro == "COMPLETADAS")
+                                Color(0xFF42A5F5)
+                            else
+                                Color(0xFFD6ECFF),
+
+                        contentColor =
+                            if (filtro == "COMPLETADAS")
+                                Color.White
+                            else
+                                Color(0xFF1565C0)
                     )
                 ) {
                     Text("Completadas")
